@@ -1,16 +1,36 @@
-# This is a sample Python script.
+import librosa
+import os.path
+from typing import Final, Tuple, List
 
-# Press Maj+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import numpy as np
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print('Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+NON_01: Final[str] = os.path.join("ressources", "non_01.wav")
 
 
-# Press the green button in the gutter to run the script.
+def hamming(size):
+    return np.hamming(size)
+
+
+def preaccentuation(signal):
+    signaldec = np.roll(signal, 1)  # décale les éléments vers +1 (le dernier passe à 0)
+    signaldec[0] = 0
+    output = signal - 0.97 * signaldec
+    return output
+
+
+def run():
+    mon_signal, frequence_signal = librosa.load(NON_01)
+    librosa.display.waveshow(mon_signal, sr=frequence_signal)
+    window_length = 25 * frequence_signal // 1000
+    hop_length = 10 * frequence_signal // 1000
+    fen = hamming(window_length)
+    print(window_length)
+    print(hop_length)
+    mon_signal_preaccentue = preaccentuation(mon_signal)
+    mfccs = librosa.feature.mfcc(mon_signal_preaccentue, sr=frequence_signal, win_length=window_length, hop_length=hop_length, n_mfcc=13, window=fen)
+    mfcc_dela = librosa.feature.delta(mfccs)
+    mffcs_delta_2 = librosa.feature.delta(mfccs, order=2)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    run()

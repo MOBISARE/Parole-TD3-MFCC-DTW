@@ -3,3 +3,4 @@ pip == 21.3.1
 setuptools == 60.2.0
 typing == 3.7.4.3
 wheel == 0.37.1
+librosa == 0.10.0.post2
