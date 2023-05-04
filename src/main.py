@@ -1,3 +1,5 @@
+from os import listdir
+from os.path import isfile, join
 
 import numpy as np
 from scipy.io.wavfile import read, write
@@ -55,6 +57,58 @@ def create_mfcc_file(filename):
     file.write(mfccs_string)
     file.close()
 
+
+def getFileListFromFolder(path:str):
+
+    #Get all files from folder ressources/audio in array
+    allFiles = []
+    #Check all files in ressources folder
+    allFiles = [f for f in listdir(path) if isfile(join(path, f))]
+
+    return allFiles
+def getFileList(path:str):
+
+    #Get all oui_... files in resssources folder in an array
+    allFiles = []
+    #Check all files in ressources folder
+    for i in range(1,NUMBER_OF_FILE+1):
+        file = path + str(i) + ".wav"
+        allFiles.append(file)
+    return allFiles
+
+def createRefFolder(fileList, fileName):
+    print(fileList)
+    print(fileName)
+    file = open(fileName, "w")
+    for i in range(len(fileList)):
+        file.write(fileList[i] + "\n")
+    file.close()
+
+#Pour la distance locale d, nous prendrons la distance Euclidienne au carré
+#Σ(X|i][k] – Y[j][k])² / (ΣX[i][k]² . ΣY[i][k]²)
+def d(X,Y):
+    return np.sum((X-Y)**2)/(np.sum(X**2)*np.sum(Y**2))
+def dtw(ref, test):
+    n, m = len(test), len(ref)
+    nb = N_MFCC
+
+    dtw_matrix = np.zeros((n + 1, m + 1))
+    for i in range(n + 1):
+        for j in range(m + 1):
+            dtw_matrix[i, j] = np.inf
+    dtw_matrix[0, 0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            cost = abs(s[i - 1] - t[j - 1])
+
+            last_min = np.min([dtw_matrix[i - 1, j], dtw_matrix[i, j - 1], dtw_matrix[i - 1, j - 1]])
+            dtw_matrix[i, j] = cost + last_min
+    return dtw_matrix
+
+
+
+
 def main():
 
     for i in range(1,NUMBER_OF_FILE+1):
@@ -62,6 +116,11 @@ def main():
         fileOui = "ressources/oui_0" + str(i) + ".wav"
         create_mfcc_file(fileNon)
         create_mfcc_file(fileOui)
+
+    createRefFolder(getFileList("ressources/oui_0"), "ressources/ref/Ref_OUI.txt")
+    createRefFolder(getFileList("ressources/non_0"), "ressources/ref/Ref_NON.txt")
+    createRefFolder(getFileListFromFolder("ressources/audio/"), "ressources/ref/Test.txt")
+
 
 if __name__ == "__main__":
     main()

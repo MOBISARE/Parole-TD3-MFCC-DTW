@@ -1,0 +1,8 @@
+bon.wav
+buis.wav
+don.wav
+non.wav
+nuit.wav
+oui.wav
+un.wav
+zero.wav
