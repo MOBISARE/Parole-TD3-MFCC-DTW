@@ -1,8 +1,8 @@
-bon.wav
-buis.wav
-don.wav
-non.wav
-nuit.wav
-oui.wav
-un.wav
-zero.wav
+ressources/audio/bon.wav
+ressources/audio/buis.wav
+ressources/audio/don.wav
+ressources/audio/non.wav
+ressources/audio/nuit.wav
+ressources/audio/oui.wav
+ressources/audio/un.wav
+ressources/audio/zero.wav
